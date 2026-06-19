@@ -1,0 +1,28 @@
+A Evolução da Geração Aumentada por Recuperação: Do Naive ao RAG Avançado
+
+A Geração Aumentada por Recuperação, ou RAG (Retrieval-Augmented Generation), é uma arquitetura que otimiza a saída 
+de um Grande Modelo de Linguagem (LLM) referenciando uma base de conhecimento confiável antes de gerar uma resposta.
+O modelo "RAG Naive" ou tradicional segue um fluxo simples: o usuário faz uma pergunta, o sistema converte essa pergunta
+em um vetor, busca no banco de dados vetorial os fragmentos de texto mais similares, e envia tudo para a LLM gerar
+a resposta final. Embora funcional, o RAG Naive frequentemente sofre com falhas de precisão, trazendo documentos
+irrelevantes que confundem a LLM ou estouram o limite da janela de contexto.
+
+Para solucionar essas limitações, surge o conceito de RAG Avançado, que introduz melhorias significativas em duas
+etapas cruciais: a pré-recuperação e a pós-recuperação. O objetivo geral é garantir que apenas a informação
+de mais alta qualidade e relevância chegue ao modelo de linguagem.
+
+A fase de pré-recuperação foca em otimizar a busca antes mesmo dela acontecer. Estratégias comuns incluem melhorar
+a granularidade dos dados no momento da indexação e otimizar a consulta do usuário. Muitas vezes, a pergunta original
+é mal formulada ou muito curta. Técnicas como a Expansão de Consulta (Query Expansion) utilizam uma LLM para reescrever
+a pergunta do usuário de múltiplas formas ou extrair palavras-chave, garantindo que o banco vetorial consiga alinhar
+a intenção real com os documentos armazenados.
+
+Já a fase de pós-recuperação lida com o refinamento dos resultados após a busca inicial no banco vetorial. O problema
+central que esta etapa resolve é lidar com informações ruidosas ou distrativas. Não é ideal enviar muitos registros (chunks)
+para a LLM, pois isso aumenta o custo computacional e dilui o foco da resposta.
+
+A técnica mais poderosa da pós-recuperação é o Re-ranqueamento. Em vez de simplesmente aceitar os "Top K" resultados
+iniciais devolvidos pelo banco vetorial com base na similaridade de cosseno superficial, o sistema aplica um modelo
+especializado, como um Cross-Encoder. Esse re-ranqueador recalcula a similaridade semântica de forma muito mais profunda
+entre a pergunta original e cada trecho recuperado. Ele então reorganiza esses resultados, colocando no topo apenas
+os "Top n" trechos verdadeiramente mais úteis e precisos, descartando o resto antes de enviar o contexto para a LLM final.
